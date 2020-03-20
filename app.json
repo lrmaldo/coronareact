@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Blank Template",
+    "name": "Mapa COVID-19",
     "slug": "MapsCoro",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -24,7 +24,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lrmaldo.mapscovid"
+    },
+    "android": {
+      "package": "com.lrmaldo.mapscovid",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyDn-SItPueeJksJgURjiGNpeHjhzCef9iM" }   
+     }
     }
   }
 }
