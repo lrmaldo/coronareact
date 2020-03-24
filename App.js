@@ -1,5 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
+import { Container, Header, Left, Body, Right, Title, Subtitle } from 'native-base';
 import { StyleSheet, Text, View,
    AppRegistry,
    ScrollView,
@@ -8,7 +9,7 @@ import { StyleSheet, Text, View,
 
 
 const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = height / 4;
+const CARD_HEIGHT = height / 2.9;
 const CARD_WIDTH = CARD_HEIGHT - 20;
 
 export default class App extends React.Component {
@@ -18,7 +19,14 @@ export default class App extends React.Component {
     this.state = {
       isLoading: true,
       markers: [],
+      region: {
+        latitude: 45.52220671242907,
+        longitude: -122.6653281029795,
+        latitudeDelta: 0.04864195044303443,
+        longitudeDelta: 0.040142817690068,
+      },
     };
+    
   }
 
   fetchMarkerData() {
@@ -40,10 +48,16 @@ export default class App extends React.Component {
     this.index = 0;
     this.animation = new Animated.Value(0);
   }
-  componentDidMount() {
+  async  componentDidMount() {
+
+    await Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    });
+
     this.fetchMarkerData();
 
-    this.animation.addListener(({value})=>{
+     this.animation.addListener(({value})=>{
       let index = Math.floor(value / CARD_WIDTH + 0.3);
       if(index >= this.state.markers.length){
         index = this.state.markers - 1;
@@ -52,14 +66,24 @@ export default class App extends React.Component {
         index = 0;
       }
       clearTimeout(this.regionTimeout)
-      this.regionTimeout = setTimeout(() => {
-          if (this.index !== index) {
-              this.index = index
-              const { coordinate } = this.state.markers[index]
-             
-          }
-      }, 10)
+       /**this.regionTimeout = setTimeout(() => {
+        if (this.index !== index) {
+          this.index = index;
 
+          const { lat } = this.state.markers[index];
+          const { long } = this.state.markers[index];
+          this.map.animateToRegion(
+            {
+              latitude:lat,
+              longitude: long
+              latitudeDelta: this.state.region.latitudeDelta,
+              longitudeDelta: this.state.region.longitudeDelta,
+            },
+            350
+          );
+        }
+      }, 10);
+*/
     });
 }
 
@@ -87,13 +111,18 @@ export default class App extends React.Component {
 
 
     return (
-      <View style={styles.container}>
+
+
+      
+      <Container style={styles.container}>
+
+        
         <MapView style={styles.mapStyle}  
         initialRegion={{
           latitude: 17.0829383,
       longitude: -96.7884567,
-      latitudeDelta: 3.622,
-      longitudeDelta: 3.621,
+      latitudeDelta: 5.622,
+      longitudeDelta: 5.621,
         }}>
 
 {this.state.isLoading ? null : this.state.markers.map((marker, index) => {
@@ -102,9 +131,7 @@ export default class App extends React.Component {
          longitude: marker.long,
      };
 
-     const metadata = `Confirmados: ${marker.confirmados}
-     -Negativos: ${marker.negativos}
-     -Recuperados: ${marker.recuperados}`;
+     const metadata = `Esta región`;
      
      const scaleStyle ={
        transform: [
@@ -122,8 +149,8 @@ export default class App extends React.Component {
             key={index}
             coordinate={coords}
             
-            //title={marker.region}
-            //description={metadata}
+            title={marker.region}
+            description={metadata}
             
          >
           <Animated.View style={[styles.markerWrap,opacityStyle]}>
@@ -180,8 +207,8 @@ export default class App extends React.Component {
             </View>
           ))}
         </Animated.ScrollView>
-        
-      </View>
+         
+      </Container>
     );
   }
 }
@@ -223,12 +250,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardtitle: {
-    fontSize: 12,
+    fontSize: 15,
     marginTop: 5,
     fontWeight: "bold",
   },
   cardDescription: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#444",
   },
   markerWrap: {
@@ -239,16 +266,16 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 70,
-    backgroundColor: "rgba(130,4,150, 0.9)",
+    backgroundColor: "rgba(232,21,21, 0.9)",
   },
   ring: {
     width: 48,
     height: 48,
     borderRadius:60,
-    backgroundColor: "rgba(130,4,150, 0.3)",
+    backgroundColor: "rgba(232,21,21, 0.3)",
     position: "absolute",
     borderWidth: 4,
-    borderColor: "rgba(130,4,150, 0.5)",
+    borderColor: "rgba(232,21,21, 0.5)",
   }, 
 
 
