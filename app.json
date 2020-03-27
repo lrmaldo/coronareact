@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mapa COVID-19",
-    "slug": "MapsCoro",
+    "name": "CV19 Oaxaca",
+    "slug": "CV19OAx",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -13,9 +13,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon_splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFFFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -25,10 +25,13 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lrmaldo.mapscovid"
+      "bundleIdentifier": "com.lrmaldo.proyectoax",
+      "config": {
+        "googleMapsApiKey":  "AIzaSyDn-SItPueeJksJgURjiGNpeHjhzCef9iM"  
+     }
     },
     "android": {
-      "package": "com.lrmaldo.mapscovid",
+      "package": "com.lrmaldo.proyectoax",
       "config": {
         "googleMaps": { "apiKey": "AIzaSyDn-SItPueeJksJgURjiGNpeHjhzCef9iM" }   
      }

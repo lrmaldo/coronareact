@@ -1,289 +1,261 @@
 import React from 'react';
-import MapView from 'react-native-maps';
-import { Container, Header, Left, Body, Right, Title, Subtitle } from 'native-base';
-import { StyleSheet, Text, View,
-   AppRegistry,
-   ScrollView,
-   Animated,
-   Dimensions } from 'react-native';
+import 'react-native-gesture-handler';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { StyleSheet, Text, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {FontAwesome} from '@expo/vector-icons';
 
 
-const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = height / 2.9;
-const CARD_WIDTH = CARD_HEIGHT - 20;
+//vistas
+import Mapa from './src/mapa/container/mapa';
+import Datos from './src/datos/container/datos';
+import Noticias from './src/noticias/container/noticias';
+import Notificacion from './src/notificaciones/container/notificaciones';
+import DetalleNoti from './src/noticias/container/noticiasDetail';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: true,
-      markers: [],
-      region: {
-        latitude: 45.52220671242907,
-        longitude: -122.6653281029795,
-        latitudeDelta: 0.04864195044303443,
-        longitudeDelta: 0.040142817690068,
-      },
-    };
-    
-  }
-
-  fetchMarkerData() {
-    fetch('http://mapa.sattlink.com/api')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({ 
-          isLoading: false,
-          markers: responseJson, 
-        });
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  componentWillMount() {
-    this.index = 0;
-    this.animation = new Animated.Value(0);
-  }
-  async  componentDidMount() {
-
-    await Expo.Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-    });
-
-    this.fetchMarkerData();
-
-     this.animation.addListener(({value})=>{
-      let index = Math.floor(value / CARD_WIDTH + 0.3);
-      if(index >= this.state.markers.length){
-        index = this.state.markers - 1;
-      }
-      if (index <= 0){
-        index = 0;
-      }
-      clearTimeout(this.regionTimeout)
-       /**this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-
-          const { lat } = this.state.markers[index];
-          const { long } = this.state.markers[index];
-          this.map.animateToRegion(
-            {
-              latitude:lat,
-              longitude: long
-              latitudeDelta: this.state.region.latitudeDelta,
-              longitudeDelta: this.state.region.longitudeDelta,
-            },
-            350
-          );
-        }
-      }, 10);
+/** 
+import Login from './src/modulos/login/containers/login';
+import Registro from './src/modulos/login/containers/registro'
+import Home from './src/modulos/home/containers/inicio'
+import Agenda from './src/modulos/agenda/containers/agenda'
+import Notificacion from './src/modulos/notificacion/containers/notificacion'
+import GeoMap from './src/modulos/GeoMaps/containers/geomaps'
+import Perfil from './src/modulos/perfil/containers/perfil'
 */
-    });
-}
 
 
-  render() {
-    
-    const interpolations = this.state.markers.map((marker,index)=>{
-      const inputRange =[
-        (index -1) * CARD_WIDTH,
-      index * CARD_WIDTH,
-      (index +1) * CARD_WIDTH
-      ]
-      const scale = this.animation.interpolate({
-        inputRange,
-        outputRange:[2,5,2],
-        extrapolate:"clamp"
-      })
-      const opacity = this.animation.interpolate({
-        inputRange,
-        outputRange:[.35,1,.35],
-        extrapolate:"clamp",
-      })
-      return {scale,opacity}
-    })
+const TabIconInicio = (props) => (
+  <FontAwesome
+    name={'map-marker'}
+    size={30}
+    color={props.focused ? 'white' : 'darkgrey'}
+  />
+)
+const TabIcondatos = (props) => (
+  <Ionicons
+    name={'md-information-circle'}
+    size={30}
+    color={props.focused ? 'white' : 'darkgrey'}
+  />
+)
+
+const TabIconNoticias = (props) => (
+  <FontAwesome
+    name='newspaper-o'
+    size={30}
+    color={props.focused ? 'white' : 'darkgrey'}
+  />
+)
+
+const TabIconNotificaciones = (props) => (
+  <Ionicons
+    name='md-notifications'
+    size={30}
+    color={props.focused ? 'white' : 'darkgrey'}
+  />
+)
 
 
-    return (
 
+
+const HomeNavigator = createStackNavigator({
+  Home:{
+    screen: Mapa,
+    navigationOptions:{
+          title:"Miappshop",
+          headerTitleAlign:'center',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        headerTintColor:"white",
+        headerBackground:<View>
+        <View style={{height:85, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
+        <View style={{height:80, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
+      </View>,
 
       
-      <Container style={styles.container}>
-
         
-        <MapView style={styles.mapStyle}  
-        initialRegion={{
-          latitude: 17.0829383,
-      longitude: -96.7884567,
-      latitudeDelta: 5.622,
-      longitudeDelta: 5.621,
-        }}>
-
-{this.state.isLoading ? null : this.state.markers.map((marker, index) => {
-     const coords = {
-         latitude: marker.lat,
-         longitude: marker.long,
-     };
-
-     const metadata = `Esta región`;
-     
-     const scaleStyle ={
-       transform: [
-         {
-           scale:interpolations[index].scale
-         }
-       ]
-     }
-     const opacityStyle ={
-       opacity:interpolations[index].opacity
-     }
-
-     return (
-         <MapView.Marker
-            key={index}
-            coordinate={coords}
-            
-            title={marker.region}
-            description={metadata}
-            
-         >
-          <Animated.View style={[styles.markerWrap,opacityStyle]}>
-          <Animated.View style={[styles.ring,scaleStyle]} />
-          <View style={styles.marker} />
-        </Animated.View>
-          
-         </MapView.Marker>
-         
-       
-
-     );
-  })}
-    </MapView>
+        
+    },
+  },
   
-    <Animated.ScrollView
-          horizontal
-          scrollEventThrottle={1}
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: this.animation,
-                  },
-                },
-              },
-            ],
-            { useNativeDriver: true }
-          )}
-          style={styles.scrollView}
-          contentContainerStyle={styles.endPadding}
-        >
-           {this.state.markers.map((marker, index) => (
-            <View style={styles.card} key={index}>
-            
-              <View style={styles.textContent}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{marker.region}</Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>
-                  Confirmados: {marker.confirmados}
-                </Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>
-                  Sospechosos: {marker.sospechosos}
-                </Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>
-                  Negativos: {marker.negativos}
-                </Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>
-                  Muertos: {marker.muertos}
-                </Text>
-              </View>
-            </View>
-          ))}
-        </Animated.ScrollView>
-         
-      </Container>
-    );
+  
+});
+
+const DatosNavigator = createStackNavigator({
+  Datos: {
+    screen: Datos,
+    navigationOptions:{
+          title:"Datos",
+          headerTitleAlign:'center',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        headerTintColor:"white",
+        headerBackground:<View>
+        <View style={{height:85, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
+        <View style={{height:80, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
+      </View>,
+    },
+  },
+  
+});
+
+const NotificacionNavigator = createStackNavigator({
+  Notificacion: {
+    screen: Notificacion,
+    navigationOptions:{
+          title:"Notificaciones",
+          headerTitleAlign:'center',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        headerTintColor:"white",
+        headerBackground:<View>
+        <View style={{height:75, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
+        <View style={{height:70, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
+      </View>,
+    },
+  },
+  
+});
+const NoticiasNavigator = createStackNavigator({
+  Noticias: {
+    screen: Noticias,
+    navigationOptions:{
+          title:"Noticias",
+          headerTitleAlign:'center',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        headerTintColor:"white",
+        headerBackground:<View>
+        <View style={{height:85, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
+        <View style={{height:80, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
+      </View>,
+    },
+  }, 
+  DetalleNoticia: {
+    screen: DetalleNoti,
+    navigationOptions:{
+          title:"Noticias Tvbus",
+          headerTitleAlign:'center',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        headerTintColor:"white",
+        headerBackground:<View>
+        <View style={{height:85, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
+        <View style={{height:80, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
+      </View>,
+    },
+  },
+
+  
+});
+
+
+
+const BottonNavegation = createBottomTabNavigator({
+  
+  Home:{
+    screen:HomeNavigator,
+    navigationOptions:{
+      title:'Inicio',
+      tabBarIcon: TabIconInicio,
+     // tabBarIcon: ({activeTintColor}) => <FontAwesome name="home" color={"white"}></FontAwesome>
+    },
+    
+       
+  },
+  Datos:{
+    screen: DatosNavigator,
+    navigationOptions:{
+      title:'Datos',
+      tabBarIcon: TabIcondatos,
+     // tabBarIcon: ({activeTintColor}) => <FontAwesome name="home" color={"white"}></FontAwesome>
+    },
+  },
+  Noticias:{
+    screen:NoticiasNavigator,
+    navigationOptions:{
+      title:'Noticias',
+      tabBarIcon: TabIconNoticias,
+     // tabBarIcon: ({activeTintColor}) => <FontAwesome name="home" color={"white"}></FontAwesome>
+    },
+    
+  },
+  /**Notificacion: {
+    screen:NotificacionNavigator,
+    navigationOptions:{
+      title:'Notificacion',
+      tabBarIcon: TabIconNotificaciones,
+    },
+   
+  },
+ 
+*/
+
+  
+  
+  
+ 
+
+ 
+ /* screen:AgendaNavigator,
+  screen:NotificacionNavigator,
+  screen: GeoMapsNavigator,
+  screen: PerfilNavigator,
+  #007bff
+*/
+}
+,
+
+{tabBarOptions: {
+  activeTintColor: 'white',
+  //inactiveTintColor:'#6c757d',
+  labelStyle: {
+    fontSize: 12,
+  },
+  style: {
+    backgroundColor: '#007bff',
+  },
+}
+}
+
+)
+
+const SwitchNavigation = createSwitchNavigator({
+  
+  Home: BottonNavegation
+},
+{
+  initialRouteName:'Home'
+}
+
+)
+export default  createAppContainer(SwitchNavigation)
+/*export default class  App extends React.Component {
+  render(){
+    return <Login/> 
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-   scrollView: {
-    position: "absolute",
-    bottom: 30,
-    left: 0,
-    right: 0,
-    paddingVertical: 10,
-  }, endPadding: {
-    paddingRight: width - CARD_WIDTH,
-  },
-  card: {
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#FFF",
-    marginHorizontal: 10,
-    shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    overflow: "hidden",
-  },
-  textContent: {
-    flex: 1,
-  },
-  cardtitle: {
-    fontSize: 15,
-    marginTop: 5,
-    fontWeight: "bold",
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: "#444",
-  },
-  markerWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  marker: {
-    width: 16,
-    height: 16,
-    borderRadius: 70,
-    backgroundColor: "rgba(232,21,21, 0.9)",
-  },
-  ring: {
-    width: 48,
-    height: 48,
-    borderRadius:60,
-    backgroundColor: "rgba(232,21,21, 0.3)",
-    position: "absolute",
-    borderWidth: 4,
-    borderColor: "rgba(232,21,21, 0.5)",
-  }, 
 
 
-
-});
-
-/**
- *  Keystore password: 25a78909d91d43689e1b931f29b89220
-  Key alias:         QGxybWFsZG8vTWFwc0Nvcm8=
-  Key password:      7b1d9fc0c21d4b49b6cd1b4a3c5b5a37
- */
+ options={{
+          title: 'Registro',
+          headerTitleAlign:'center',
+          headerStyle: {
+            backgroundColor: '#fffffff',
+            
+          },
+          headerTintColor: '#0000000',
+          
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+**/
