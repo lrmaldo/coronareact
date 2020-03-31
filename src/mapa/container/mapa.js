@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
 });
 
 /**
- *  Keystore password: 25a78909d91d43689e1b931f29b89220
-  Key alias:         QGxybWFsZG8vTWFwc0Nvcm8=
-  Key password:      7b1d9fc0c21d4b49b6cd1b4a3c5b5a37
+ *    Keystore password: 9b58a060bbf74fe59ef63367f33b3384
+  Key alias:         QGxybWFsZG8vQ1YxOU9BeA==
+  Key password:      e71709cbe1fd4fd4b7b3002950464f1e
  */

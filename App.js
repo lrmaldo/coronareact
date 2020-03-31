@@ -12,7 +12,6 @@ import {FontAwesome} from '@expo/vector-icons';
 import Mapa from './src/mapa/container/mapa';
 import Datos from './src/datos/container/datos';
 import Noticias from './src/noticias/container/noticias';
-import Notificacion from './src/notificaciones/container/notificaciones';
 import DetalleNoti from './src/noticias/container/noticiasDetail';
 
 /** 
@@ -103,24 +102,7 @@ const DatosNavigator = createStackNavigator({
   
 });
 
-const NotificacionNavigator = createStackNavigator({
-  Notificacion: {
-    screen: Notificacion,
-    navigationOptions:{
-          title:"Notificaciones",
-          headerTitleAlign:'center',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-        headerTintColor:"white",
-        headerBackground:<View>
-        <View style={{height:75, backgroundColor:"red", position:'absolute', top:0, left:0, right:-12.5, borderBottomRightRadius:50}}/>
-        <View style={{height:70, backgroundColor:"#007bff", position:'absolute', top:0, left:0, right:-10, borderBottomRightRadius:50}}/>
-      </View>,
-    },
-  },
-  
-});
+
 const NoticiasNavigator = createStackNavigator({
   Noticias: {
     screen: Noticias,

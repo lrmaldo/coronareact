@@ -58,7 +58,8 @@ class App extends Component {
               <Left>
               
                 <Body>
-                  <Text >{item.titulo}</Text>
+                  <Text></Text>
+                  <Text style={{ fontWeight: "bold", fontSize:18}}>{item.titulo}</Text>
                   <Text note>{item.created_at}</Text>
                 </Body>
               </Left>

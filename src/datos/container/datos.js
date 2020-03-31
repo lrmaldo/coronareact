@@ -7,14 +7,6 @@ import * as Font from 'expo-font';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import Api from '../../utils/API'
 
-const cards = [
-  {
-    text: 'Card  One',
-    name: 'One',
-    image: require('../../../assets/logo_appshop.jpg'),
-  },
- 
-];
 
 class App extends Component {
     constructor(props) {
@@ -393,6 +385,7 @@ class App extends Component {
                           onPress={() => Linking.openURL('https://wa.me/522871214707')}>
                         287 121 4707
                         </Text>
+                        <Text  style={{ textAlign:"center", fontSize:18, color:"blue" }}  onPress={() => Linking.openURL('mailto:miappshop@sattlink.com')} > Email : miappshop@sattlink.com </Text>
                 </Body>
               </Left>
             </CardItem>
